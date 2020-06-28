@@ -6,7 +6,7 @@ import datetime as dt
 
 def load_data(file_name='.'):
     cur_dir = os.getcwd()
-    os.chdir("../../data/input")
+    os.chdir("../data/input")
     raw = pd.read_csv(file_name)
     os.chdir(cur_dir)
 
@@ -15,7 +15,7 @@ def load_data(file_name='.'):
 
 def save_data(data, file_name='.'):
     cur_dir = os.getcwd()
-    os.chdir("../../data/output")
+    os.chdir("../data/output")
     data.to_csv(file_name, encoding='utf-8', index=False)
     os.chdir(cur_dir)
 
@@ -244,6 +244,9 @@ def process_us_data_dynamic(data_frame):
             'transit_stations_percent_change_from_baseline': 'mean',
             'workplaces_percent_change_from_baseline': 'mean',
             'residential_percent_change_from_baseline': 'mean',
+            'walking': 'mean',
+            'transit': 'mean',
+            'driving': 'mean',
             'cases': 'sum',
             'deaths': 'sum'
         })
