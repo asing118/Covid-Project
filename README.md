@@ -52,7 +52,7 @@ Allowed values for mobility_param:
 ### Data prediction
 Based on user defined input parameter for one of the mobility param for last 8 days for a give state, a prediction output for the state containing 
 next 14 days prediction of cases on original mobility param values, next 14 days prediction of cases on user defined mobility param values and original next 14 days
-number of cases is displayed. This uses a pretrained model in LSTM. Currently supported states are NY and AZ and will be extended in future.
+number of cases is displayed. This uses a pretrained model in LSTM. Currently supported states are NY, CA and AZ and will be extended in future.
 
 ```
 python3 src/CommandLineInterface.py --operation get_prediction --state CA --mobility_param grocery_and_pharmacy_change_fraction --date 03-13-2020 --param_values '[-0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5]'
