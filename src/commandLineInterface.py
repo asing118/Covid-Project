@@ -136,12 +136,12 @@ class PythonLiteralOption(click.Option):
                    'show_mobility_trend')
 @click.option('--state', default='AZ', help='State code')
 @click.option('--date', default='01-13-20', help='Date in mm-dd-yy format')
-@click.option('--param_values', cls=PythonLiteralOption, default=[-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0],
+@click.option('--param_values', cls=PythonLiteralOption, default='[-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0]',
               help="param values as a list of size 8 (currently we only support prediction based on last 8 days of "
                    "mobility trend). Values should be between -1 to 1."
                    " Example: '[-0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5]'")
 @click.option('--mobility_param', default='retail_and_recreation_change_fraction',
-              help="one of the mobility parameters. List"
+              help="one of the mobility parameters."
                    "retail_and_recreation_change_fraction, "
                    "grocery_and_pharmacy_change_fraction, "
                    "parks_change_fraction, "
