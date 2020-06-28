@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
+import ast
 
 
 def load_data(file_name='.'):
@@ -71,6 +72,30 @@ def plot_cases_trend_graph(state):
     plt.show()
 
 
+def get_and_plot_prediction(state, mobility_param, date, param_values):
+    mapping_dict = get_mobility_data_mapping_dict()
+    mapping_dict_rev = dict([(value, key) for key, value in mapping_dict.items()])
+
+    try:
+        mapping_dict_rev[mobility_param]
+    except KeyError:
+        print("mobility parameter not valid. Please check help for accepted set of parameters")
+        return
+
+    try:
+        date = datetime.strptime(date, '%m-%d-%y').strftime('%m-%d-%Y')
+    except ValueError:
+        print('Date time not in required format of mm-dd-yy')
+
+    if len(param_values) != 8:
+        print("Param value size must be equal to 8")
+
+    if not all(ele >= -1 and ele < 1 for ele in param_values):
+        print("Param values should be between -1 to 1")
+
+    # call predict function with state, date, param_values and mapping_dict_rev[mobility_param]
+
+
 def plot_mobility_trend(state, mobility_param):
     mapping_dict = get_mobility_data_mapping_dict()
     mapping_dict_rev = dict([(value, key) for key, value in mapping_dict.items()])
@@ -96,44 +121,41 @@ def plot_mobility_trend(state, mobility_param):
     plt.show()
 
 
+class PythonLiteralOption(click.Option):
+
+    def type_cast_value(self, ctx, value):
+        try:
+            return ast.literal_eval(value)
+        except:
+            raise click.BadParameter(value)
+
+
 @click.command()
 @click.option('--operation', default='show_mobility_data_on_date',
               help='Valid operations: show_mobility_data_on_date, get_prediction, show_cases_trend, '
                    'show_mobility_trend')
 @click.option('--state', default='AZ', help='State code')
 @click.option('--date', default='01-13-20', help='Date in mm-dd-yy format')
-@click.option('--retail_and_recreation_change_fraction', default=-2.0,
-              help="retail and recreation change fraction. baseline is 0 and value should be between -1 to 1")
-@click.option('--grocery_and_pharmacy_change_fraction', default=-2.0,
-              help="grocery and pharmacy change fraction. baseline is 0 and value should be between -1 to 1")
-@click.option('--parks_change_fraction', default=-2.0,
-              help="parks change fraction. baseline is 0 and value should be between -1 to 1")
-@click.option('--transit_stations_change_fraction', default=-2.0,
-              help="transit stations change fraction. baseline is 0 and value should be between -1 to 1")
-@click.option('--workplaces_change_fraction', default=-2.0,
-              help="workplaces change fraction. baseline is 0 and value should be between -1 to 1")
-@click.option('--residential_change_fraction', default=-2.0,
-              help="residential change fraction. baseline is 0 and value should be between -1 to 1")
-@click.option('--walking_change_fraction', default=-2.0,
-              help="walking change fraction. baseline is 0 and value should be between -1 to 1")
-@click.option('--driving_change_fraction', default=-2.0,
-              help="driving change fraction. baseline is 0 and value should be between -1 to 1")
-@click.option('--transit_change_fraction', default=-2.0,
-              help="transit change fraction. baseline is 0 and value should be between -1 to 1")
+@click.option('--param_values', cls=PythonLiteralOption, default=[-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0],
+              help="param values as a list of size 8 (currently we only support prediction based on last 8 days of "
+                   "mobility trend). Values should be between -1 to 1."
+                   " Example: '[-0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5]'")
 @click.option('--mobility_param', default='retail_and_recreation_change_fraction',
-              help="one of the mobility parameters. accepted set of options are mobility param values from help")
-def hello(operation,
+              help="one of the mobility parameters. List"
+                   "retail_and_recreation_change_fraction, "
+                   "grocery_and_pharmacy_change_fraction, "
+                   "parks_change_fraction, "
+                   "transit_stations_change_fraction, "
+                   "workplaces_change_fraction, "
+                   "residential_change_fraction, "
+                   "walking_change_fraction, "
+                   "driving_change_fraction, "
+                   "transit_change_fraction"
+              )
+def mobility_covid_prediction_cli(operation,
           state,
           date,
-          retail_and_recreation_change_fraction,
-          grocery_and_pharmacy_change_fraction,
-          parks_change_fraction,
-          transit_stations_change_fraction,
-          workplaces_change_fraction,
-          residential_change_fraction,
-          walking_change_fraction,
-          driving_change_fraction,
-          transit_change_fraction,
+          param_values,
           mobility_param
           ):
     """Simple program that greets NAME for a total of COUNT times."""
@@ -143,7 +165,9 @@ def hello(operation,
         plot_cases_trend_graph(state)
     elif operation == 'show_mobility_trend':
         plot_mobility_trend(state, mobility_param)
+    elif operation == 'get_prediction':
+        get_and_plot_prediction(state, mobility_param, date, param_values)
 
 
 if __name__ == '__main__':
-    hello()
+    mobility_covid_prediction_cli()
