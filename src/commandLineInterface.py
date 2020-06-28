@@ -5,6 +5,8 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 import ast
+from load_savepoint import *
+
 
 
 def load_data(file_name='.'):
@@ -82,10 +84,10 @@ def get_and_plot_prediction(state, mobility_param, date, param_values):
         print("mobility parameter not valid. Please check help for accepted set of parameters")
         return
 
-    try:
-        date = datetime.strptime(date, '%m-%d-%y').strftime('%m-%d-%Y')
-    except ValueError:
-        print('Date time not in required format of mm-dd-yy')
+    #try:
+    #    date = datetime.strptime(date, '%m-%d-%y').strftime('%m-%d-%Y')
+    #except ValueError:
+    #    print('Date time not in required format of mm-dd-yy')
 
     if len(param_values) != 8:
         print("Param value size must be equal to 8")
@@ -94,6 +96,8 @@ def get_and_plot_prediction(state, mobility_param, date, param_values):
         print("Param values should be between -1 to 1")
 
     # call predict function with state, date, param_values and mapping_dict_rev[mobility_param]
+    load_savepoint(date, state, param_values,mapping_dict_rev[mobility_param])
+    
 
 
 def plot_mobility_trend(state, mobility_param):
@@ -136,7 +140,7 @@ class PythonLiteralOption(click.Option):
                    'show_mobility_trend')
 @click.option('--state', default='AZ', help='State code')
 @click.option('--date', default='01-13-20', help='Date in mm-dd-yy format')
-@click.option('--param_values', cls=PythonLiteralOption, default='[-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0]',
+@click.option('--param_values', cls=PythonLiteralOption, default='[-0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5]',
               help="param values as a list of size 8 (currently we only support prediction based on last 8 days of "
                    "mobility trend). Values should be between -1 to 1."
                    " Example: '[-0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5]'")

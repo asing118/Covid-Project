@@ -1,3 +1,5 @@
 # Python .gitignore
 
 .idea/
+python
+__pycache__/
